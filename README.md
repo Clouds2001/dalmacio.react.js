@@ -1,71 +1,51 @@
-# Getting Started with Create React App
+# abab [![npm version](https://badge.fury.io/js/abab.svg)](https://www.npmjs.com/package/abab) [![Build Status](https://travis-ci.org/jsdom/abab.svg?branch=master)](https://travis-ci.org/jsdom/abab)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A JavaScript module that implements `window.atob` and `window.btoa` according the forgiving-base64 algorithm in the [Infra Standard](https://infra.spec.whatwg.org/#forgiving-base64). The original code was forked from [w3c/web-platform-tests](https://github.com/w3c/web-platform-tests/blob/master/html/webappapis/atob/base64.html).
 
-## Available Scripts
+Compatibility: Node.js version 3+ and all major browsers.
 
-In the project directory, you can run:
+Install with `npm`:
 
-### `npm start`
+```sh
+npm install abab
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## API
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `btoa` (base64 encode)
 
-### `npm test`
+```js
+const { btoa } = require('abab');
+btoa('Hello, world!'); // 'SGVsbG8sIHdvcmxkIQ=='
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### `atob` (base64 decode)
 
-### `npm run build`
+```js 
+const { atob } = require('abab');
+atob('SGVsbG8sIHdvcmxkIQ=='); // 'Hello, world!'
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Valid characters
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+[Per the spec](https://html.spec.whatwg.org/multipage/webappapis.html#atob:dom-windowbase64-btoa-3), `btoa` will accept strings "containing only characters in the range `U+0000` to `U+00FF`." If passed a string with characters above `U+00FF`, `btoa` will return `null`. If `atob` is passed a string that is not base64-valid, it will also return `null`. In both cases when `null` is returned, the spec calls for throwing a `DOMException` of type `InvalidCharacterError`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Browsers
 
-### `npm run eject`
+If you want to include just one of the methods to save bytes in your client-side code, you can `require` the desired module directly.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```js
+const atob = require('abab/lib/atob');
+const btoa = require('abab/lib/btoa');
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Development
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+If you're **submitting a PR** or **deploying to npm**, please use the [checklists in CONTRIBUTING.md](CONTRIBUTING.md#checklists).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Remembering what `atob` and `btoa` stand for
 
-## Learn More
+Base64 comes from IETF [RFC 4648](https://tools.ietf.org/html/rfc4648#section-4) (2006). 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# dalmacio.react.js
+- **`btoa`**, the encoder function, stands for **binary** to **ASCII**, meaning it converts any binary input into a subset of **ASCII** (Base64).
+- **`atob`**, the decoder function, converts **ASCII** (or Base64) to its original **binary** format. 
